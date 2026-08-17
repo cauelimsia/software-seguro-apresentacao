@@ -51,7 +51,7 @@ const SLIDES = [
   },
   {
     tema: "claro",
-    nota: "DEMO AO VIVO: clicar em simular falha nos dois painéis. Esquerda fail-open aprova fraude, direita fail-closed recusa.",
+    nota: "DEMO AO VIVO: a primeira seta ja roda a simulacao sozinha, a segunda avanca. Esquerda fail-open aprova fraude, direita fail-closed recusa.",
     html: `
       <p class="kicker">Demo · API de pagamento com antifraude fora do ar</p>
       <h2>Fail-open vs fail-closed</h2>
@@ -143,7 +143,16 @@ function irPara(i) {
   if (notasVisiveis) notes.textContent = SLIDES[i].nota;
 }
 
-function proximo() { irPara(atual + 1); }
+function proximo() {
+  const slideEl = els[atual];
+  const botao = slideEl && slideEl.querySelector("#btn-simular");
+  if (botao && !slideEl.dataset.demoRodou) {
+    slideEl.dataset.demoRodou = "1";
+    botao.click();
+    return;
+  }
+  irPara(atual + 1);
+}
 function anterior() { irPara(atual - 1); }
 
 document.getElementById("next").addEventListener("click", proximo);

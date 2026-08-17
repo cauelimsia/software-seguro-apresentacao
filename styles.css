@@ -1,0 +1,295 @@
+/* ============================================================
+   Falhar com Segurança — identidade Martha Falcão | Wyden
+   roxo profundo + magenta + laranja, tipografia Bricolage
+   ============================================================ */
+
+:root {
+  --roxo: #3d1146;
+  --roxo-2: #55195f;
+  --magenta: #b01e77;
+  --laranja: #f26f21;
+  --areia: #faf6f2;
+  --tinta: #2a1130;
+  --ok: #1f9d55;
+  --erro: #d93025;
+  --mono: "JetBrains Mono", monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: "Archivo", sans-serif;
+  background: var(--roxo);
+  color: var(--areia);
+  overflow: hidden;
+}
+
+#fx {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+body[data-slide="0"] #fx { opacity: 1; }
+
+/* ---------- deck ---------- */
+
+#deck { position: fixed; inset: 0; z-index: 1; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 6vw, 6rem);
+  padding-bottom: clamp(4rem, 10vh, 7rem);
+  opacity: 0;
+  transform: translateX(4rem);
+  transition: opacity .45s ease, transform .45s cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+  visibility: hidden;
+}
+.slide.ativo {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  visibility: visible;
+}
+.slide.saindo {
+  opacity: 0;
+  transform: translateX(-4rem);
+  visibility: visible;
+}
+
+.slide.claro { background: var(--areia); color: var(--tinta); }
+.slide.magenta { background: linear-gradient(135deg, var(--roxo) 0%, #7a1a63 100%); }
+
+/* ---------- tipografia ---------- */
+
+.kicker {
+  font-family: var(--mono);
+  font-size: clamp(.7rem, 1.4vw, .85rem);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--laranja);
+  margin-bottom: 1.2rem;
+  animation: sobe .5s ease both;
+}
+
+h1, h2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  line-height: .95;
+  letter-spacing: -.02em;
+  animation: sobe .55s .06s ease both;
+}
+h1 { font-size: clamp(2.6rem, 9vw, 7rem); }
+h2 { font-size: clamp(2rem, 6vw, 4.2rem); max-width: 18ch; }
+
+.slide p.grande {
+  font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+  line-height: 1.45;
+  max-width: 56ch;
+  margin-top: 1.6rem;
+  animation: sobe .6s .12s ease both;
+}
+.slide .destaque { color: var(--laranja); font-weight: 600; }
+.slide.claro .destaque { color: var(--magenta); }
+
+.assinatura {
+  margin-top: 2.5rem;
+  font-size: clamp(.85rem, 1.6vw, 1rem);
+  opacity: .75;
+  animation: sobe .6s .2s ease both;
+}
+
+@keyframes sobe {
+  from { opacity: 0; transform: translateY(1.4rem); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- listas em cartões ---------- */
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: clamp(.7rem, 1.6vw, 1.2rem);
+  margin-top: 2.2rem;
+}
+.cartao {
+  border: 2px solid currentColor;
+  border-radius: .9rem;
+  padding: 1.1rem 1.2rem;
+  font-size: clamp(.9rem, 1.8vw, 1.1rem);
+  line-height: 1.4;
+  animation: sobe .55s ease both;
+}
+.cartao b {
+  display: block;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.15em;
+  margin-bottom: .35rem;
+  color: var(--laranja);
+}
+.slide.claro .cartao { border-color: #e3d5cb; background: #fff; box-shadow: 0 6px 24px rgba(61, 17, 70, .07); }
+.slide.claro .cartao b { color: var(--magenta); }
+.cartao:nth-child(2) { animation-delay: .08s; }
+.cartao:nth-child(3) { animation-delay: .16s; }
+.cartao:nth-child(4) { animation-delay: .24s; }
+.cartao:nth-child(5) { animation-delay: .32s; }
+
+/* ---------- fluxo (slide app bancário) ---------- */
+
+.fluxo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .8rem;
+  margin-top: 2.4rem;
+  font-family: var(--mono);
+  font-size: clamp(.78rem, 1.7vw, 1rem);
+}
+.fluxo .no {
+  border: 2px solid var(--areia);
+  border-radius: .7rem;
+  padding: .8rem 1.1rem;
+  animation: sobe .5s ease both;
+}
+.fluxo .no.falha { border-color: var(--laranja); color: var(--laranja); }
+.fluxo .no.nega { background: var(--laranja); border-color: var(--laranja); color: var(--roxo); font-weight: 600; }
+.fluxo .seta { opacity: .6; }
+.fluxo .no:nth-child(3) { animation-delay: .1s; }
+.fluxo .no:nth-child(5) { animation-delay: .2s; }
+.fluxo .no:nth-child(7) { animation-delay: .3s; }
+
+/* ---------- demo interativa ---------- */
+
+.demo {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+.demo-painel {
+  border-radius: 1rem;
+  padding: 1.3rem;
+  background: #fff;
+  border: 2px solid #e3d5cb;
+  box-shadow: 0 6px 24px rgba(61, 17, 70, .07);
+}
+.demo-painel h3 {
+  font-family: var(--mono);
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: .9rem;
+}
+.demo-painel.aberta h3 { color: var(--erro); }
+.demo-painel.fechada h3 { color: var(--ok); }
+
+.demo-log {
+  font-family: var(--mono);
+  font-size: clamp(.72rem, 1.5vw, .85rem);
+  line-height: 1.7;
+  min-height: 7.5em;
+  white-space: pre-line;
+}
+.demo-log .ok { color: var(--ok); }
+.demo-log .erro { color: var(--erro); }
+.demo-log .aviso { color: var(--laranja); }
+
+.demo-acoes { margin-top: 1.6rem; display: flex; gap: .9rem; flex-wrap: wrap; }
+.botao {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: .7rem;
+  padding: .85rem 1.5rem;
+  cursor: pointer;
+  background: var(--magenta);
+  color: #fff;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.botao:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(176, 30, 119, .35); }
+.botao.secundario { background: var(--roxo-2); }
+
+/* ---------- hud ---------- */
+
+.hud {
+  position: fixed;
+  z-index: 3;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem clamp(1.2rem, 4vw, 3rem);
+  font-size: .8rem;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+.hud-brand {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--magenta);
+}
+body[data-tema="escuro"] .hud-brand { color: #e9a6cf; }
+.hud-brand span { color: var(--laranja); font-weight: 600; }
+.hud-nav { display: flex; align-items: center; gap: .8rem; pointer-events: auto; }
+.hud-nav button {
+  background: none;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.hud-nav button:hover { color: var(--laranja); }
+#counter { font-family: var(--mono); opacity: .8; }
+.hud-hint { opacity: .45; font-family: var(--mono); font-size: .68rem; }
+body[data-tema="claro"] .hud { color: var(--tinta); }
+body[data-tema="escuro"] .hud { color: var(--areia); }
+
+.progress {
+  position: fixed;
+  z-index: 3;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, .12);
+}
+#bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--magenta), var(--laranja));
+  transition: width .35s ease;
+}
+
+/* ---------- notas do apresentador ---------- */
+
+#notes {
+  position: fixed;
+  z-index: 4;
+  right: 1rem;
+  bottom: 4.2rem;
+  max-width: 330px;
+  background: var(--tinta);
+  color: var(--areia);
+  border-left: 4px solid var(--laranja);
+  border-radius: .6rem;
+  padding: 1rem 1.2rem;
+  font-size: .85rem;
+  line-height: 1.5;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .4);
+}
+
+@media (max-width: 640px) {
+  .hud-hint { display: none; }
+  h2 { max-width: none; }
+}

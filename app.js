@@ -141,14 +141,19 @@ function irPara(i) {
   bar.style.width = ((i + 1) / SLIDES.length * 100) + "%";
   location.hash = "/" + (i + 1);
   if (notasVisiveis) notes.textContent = SLIDES[i].nota;
+  avisaMudanca();
+}
+
+// o controle remoto escuta isto para espelhar o slide atual no celular
+function avisaMudanca() {
+  document.dispatchEvent(new CustomEvent("deck:mudou"));
 }
 
 function proximo() {
   const slideEl = els[atual];
   const botao = slideEl && slideEl.querySelector("#btn-simular");
   if (botao && !slideEl.dataset.demoRodou) {
-    slideEl.dataset.demoRodou = "1";
-    botao.click();
+    botao.click();  // o clique marca demoRodou e avisa a mudança
     return;
   }
   irPara(atual + 1);
@@ -202,6 +207,9 @@ function escreve(el, linhas) {
 
 document.addEventListener("click", (e) => {
   if (e.target.id === "btn-simular") {
+    // marca aqui (e não só na seta) para o botão e o controle remoto contarem a mesma história
+    if (els[atual]) els[atual].dataset.demoRodou = "1";
+    avisaMudanca();
     escreve(document.getElementById("log-aberta"), [
       ["", "POST /pagamento  R$ 4.900,00"],
       ["aviso", "antifraude: timeout (5000ms)"],
@@ -220,8 +228,45 @@ document.addEventListener("click", (e) => {
   if (e.target.id === "btn-reset") {
     document.getElementById("log-aberta").textContent = "aguardando…";
     document.getElementById("log-fechada").textContent = "aguardando…";
+    // volta ao estado inicial do slide: a próxima seta roda a simulação de novo
+    if (els[atual]) delete els[atual].dataset.demoRodou;
+    avisaMudanca();
   }
 });
+
+/* ---------- api pública, usada pelo controle remoto ---------- */
+
+function tituloDe(i) {
+  const provisorio = document.createElement("div");
+  provisorio.innerHTML = SLIDES[i].html;
+  const titulo = provisorio.querySelector("h1, h2");
+  if (!titulo) return "Slide " + (i + 1);
+  titulo.querySelectorAll("br").forEach((br) => br.replaceWith(" "));
+  return titulo.textContent.trim();
+}
+
+window.DECK = {
+  total: SLIDES.length,
+  proximo,
+  anterior,
+  irPara,
+  titulo: tituloDe,
+  // o celular precisa saber se a seta vai rodar a demo ou pular de slide
+  estado() {
+    const el = els[atual];
+    const revela = !!(el && el.querySelector("#btn-simular") && !el.dataset.demoRodou);
+    return {
+      i: atual,
+      total: SLIDES.length,
+      titulo: tituloDe(atual),
+      nota: SLIDES[atual].nota,
+      proximoTitulo: atual + 1 < SLIDES.length ? tituloDe(atual + 1) : null,
+      revela,
+      // rótulo pronto: o celular não precisa saber as regras deste deck
+      dica: revela ? "roda a simulação" : "próximo slide"
+    };
+  }
+};
 
 /* ---------- partículas da capa (nas cores wyden) ---------- */
 
